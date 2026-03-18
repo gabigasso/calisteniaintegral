@@ -1,0 +1,593 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Calistenia Integral | Reservas</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+</head>
+
+<body>
+  <header class="site-header" id="inicio">
+    <a class="brand" href="#" aria-label="Ir al inicio">
+      <img src="logo.png.jpeg" alt="Calistenia Integral" class="logo">
+      <div class="brand-text">
+        <p class="eyebrow">Entrena con propósito</p>
+        <h1>Calistenia Integral</h1>
+      </div>
+    </a>
+
+    <nav class="nav">
+      <a href="#reserva">Reservas</a>
+    </nav>
+
+    <div class="header-actions">
+      <div id="usuarioInfo" class="login-btn" onclick="abrirLogin()">Ingresar</div>
+    </div>
+  </header>
+
+  <main>
+    <section class="promo">
+      <div class="promo-card">
+        <img src="fotoprincipal.png.jpeg" alt="Entrenamiento de calistenia" class="promo-img">
+        <div class="promo-overlay">
+          <p class="promo-eyebrow">Calistenia Integral</p>
+          <h2>Accedé a tu primera clase gratis</h2>
+          <a class="cta small" href="#reserva">Reservar ahora</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="hero">
+      <div class="hero-content">
+        <h2>Desafiá tu cuerpo, entrená sin excusas</h2>
+        <p>Clases grupales con cupos limitados, seguimiento personalizado y una comunidad que te empuja a dar lo mejor.</p>
+        <div class="hero-cta">
+          <a class="cta" href="#reserva">Reservá tu clase</a>
+          <div class="cta-note">Confirmación inmediata por email</div>
+        </div>
+        <div class="hero-stats">
+          <div class="stat">
+            <span class="stat-num">10</span>
+            <span class="stat-label">cupos por clase</span>
+          </div>
+          <div class="stat">
+            <span class="stat-num">100%</span>
+            <span class="stat-label">guiado</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-badge">
+        <div class="badge">Nivel principiante a avanzado</div>
+        <div class="badge">Entrenador certificado</div>
+        <div class="badge">Seguimiento mensual</div>
+      </div>
+    </section>
+
+    <section id="entrenamiento" class="split">
+      <div class="split-text">
+        <h2>Entrenamiento personalizado enfocado en tus objetivos</h2>
+        <p>Trabajamos fuerza, movilidad y técnica con progresiones claras. Cada clase tiene estructura, ajustes según tu nivel y un plan que se adapta a vos.</p>
+        <div class="bullets">
+          <div class="bullet">Evaluación inicial y metas reales</div>
+          <div class="bullet">Correcciones de técnica en vivo</div>
+          <div class="bullet">Resultados medibles cada mes</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="reserva" class="reservation">
+      <div class="card form-card">
+        <h2>Reservar clase</h2>
+        <p class="sub">Completá tus datos y asegurá tu lugar.</p>
+
+        <form id="formulario">
+          <div class="field">
+            <label for="name">Nombre completo</label>
+            <input id="name" type="text" name="name" placeholder="Ej: Ana Pérez" required>
+          </div>
+
+          <div class="field">
+            <label for="email">Correo electrónico</label>
+            <input id="email" type="email" name="email" placeholder="tu@email.com" required>
+          </div>
+
+          <div class="field">
+            <label for="phone">Teléfono</label>
+            <input id="phone" type="tel" name="phone" placeholder="09 123 456" required>
+          </div>
+
+          <div class="field-grid">
+            <div class="field">
+              <label for="date">Fecha</label>
+              <input id="date" type="date" name="date" required>
+            </div>
+            <div class="field">
+              <label for="time">Horario</label>
+              <input id="time" type="time" name="time" required>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="message">Mensaje opcional</label>
+            <textarea id="message" name="message" placeholder="Contanos tu objetivo o lesiones previas"></textarea>
+          </div>
+
+          <div class="status" id="statusMsg"></div>
+
+          <button id="submitBtn" type="submit">Reservar clase</button>
+          <p class="fine">Al enviar aceptás nuestra política de reservas y cancelaciones.</p>
+        </form>
+      </div>
+
+      <div class="card cupos-card">
+        <h3>Cupos disponibles</h3>
+        <p class="sub">Elegí fecha y horario para ver disponibilidad.</p>
+        <div id="cupos" class="cupos cupos-empty">
+          <div class="cupos-grid">
+            <div class="cupo placeholder"></div>
+            <div class="cupo placeholder"></div>
+            <div class="cupo placeholder"></div>
+            <div class="cupo placeholder"></div>
+            <div class="cupo placeholder"></div>
+            <div class="cupo placeholder"></div>
+            <div class="cupo placeholder"></div>
+            <div class="cupo placeholder"></div>
+            <div class="cupo placeholder"></div>
+            <div class="cupo placeholder"></div>
+          </div>
+          <p class="cupos-text">Seleccioná fecha y horario para ver cupos.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="cancelar" class="cancel">
+      <div class="card cancel-card">
+        <h2>Cancelar reserva</h2>
+        <p class="sub">Podés cancelar hasta 30 minutos antes de la clase.</p>
+
+        <form id="cancelForm" action="https://www.form-to-email.com/api/s/OO9r3tpgtewg" method="POST" target="cancelFrame">
+          <input type="text" id="cancelPhone" name="phone" value="-" class="visually-hidden" aria-hidden="true" tabindex="-1">
+          <input type="text" id="cancelClassType" name="class_type" value="Reserva de clase cancelada" class="visually-hidden" aria-hidden="true" tabindex="-1">
+          <input type="text" id="cancelCorreo" name="correo electrónico" value="" class="visually-hidden" aria-hidden="true" tabindex="-1">
+
+          <div class="field">
+            <label for="cancelName">Nombre completo</label>
+            <input id="cancelName" type="text" name="name" placeholder="Ej: Ana Pérez" required>
+          </div>
+
+          <div class="field">
+            <label for="cancelEmail">Correo electrónico</label>
+            <input id="cancelEmail" type="email" name="email" placeholder="tu@email.com" required>
+          </div>
+
+          <div class="field-grid">
+            <div class="field">
+              <label for="cancelDate">Fecha</label>
+              <input id="cancelDate" type="date" name="date" required>
+            </div>
+            <div class="field">
+              <label for="cancelTime">Horario</label>
+              <input id="cancelTime" type="time" name="time" required>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="cancelReason">Motivo (opcional)</label>
+            <textarea id="cancelReason" name="message" placeholder="Contanos el motivo de la cancelación"></textarea>
+          </div>
+
+          <div class="status" id="cancelStatus"></div>
+
+          <button id="cancelBtn" type="submit">Cancelar clase</button>
+          <p class="fine">Si faltan menos de 30 minutos para la clase, no se podrá cancelar.</p>
+        </form>
+        <iframe name="cancelFrame" class="form-iframe" title="Envio de cancelacion"></iframe>
+      </div>
+    </section>
+
+    <section id="comunidad" class="info">
+      <div class="section-head">
+        <h2>Más que un entrenamiento, una comunidad</h2>
+        <p>Nos movemos juntos, crecemos juntos.</p>
+      </div>
+      <div class="cards">
+        <div class="info-card">
+          <h3>Evaluación inicial</h3>
+          <p>Medimos tu nivel y armamos un plan realista.</p>
+        </div>
+        <div class="info-card">
+          <h3>Clases guiadas</h3>
+          <p>Progresiones claras, técnica cuidada y seguimiento.</p>
+        </div>
+        <div class="info-card">
+          <h3>Comunidad activa</h3>
+          <p>Eventos, desafíos y logros compartidos.</p>
+        </div>
+      </div>
+
+  <footer class="site-footer">
+    <div class="contact-grid">
+      <div class="contact-card">
+        <div class="contact-icon">✉</div>
+        <h4>Email</h4>
+        <p>Consultas y coordinación de reservas.</p>
+        <a href="mailto:integralcalistenia@gmail.com">integralcalistenia@gmail.com</a>
+      </div>
+      <div class="contact-card">
+        <div class="contact-icon">☎</div>
+        <h4>WhatsApp</h4>
+        <p>Atención directa para dudas rápidas.</p>
+        <a href="https://wa.me/5491132864864">Ir a WhatsApp</a>
+      </div>
+      <div class="contact-card">
+        <div class="contact-icon">◎</div>
+        <h4>Instagram</h4>
+        <p>Seguinos para novedades y entrenamientos.</p>
+        <a href="https://www.instagram.com/calisteniaintegral26/">Ir a Instagram</a>
+      </div>
+    </div>
+    <div class="footer-note">Calistenia Integral · Reservas en línea</div>
+  </footer>
+
+  <a class="whatsapp-float" href="https://wa.me/5491132864864" aria-label="Contactar por WhatsApp">
+    WhatsApp
+  </a>
+
+  <!-- LOGIN -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <button class="cerrar" onclick="cerrarLogin()" aria-label="Cerrar">×</button>
+      <h2>Iniciar sesión</h2>
+
+      <div class="field">
+        <label for="loginEmail">Correo electrónico</label>
+        <input type="email" id="loginEmail" placeholder="tu@email.com">
+      </div>
+
+      <div class="field">
+        <label for="loginPassword">Contraseña</label>
+        <input type="password" id="loginPassword" placeholder="••••••••">
+      </div>
+
+      <button onclick="login()">Ingresar</button>
+
+      <div class="modal-links">
+        <button class="link" onclick="mostrarRegistro()">Crear cuenta</button>
+        <button class="link" onclick="recuperarPassword()">Olvidé mi contraseña</button>
+      </div>
+
+      <div id="registroBox" class="registro" style="display:none">
+        <h3>Crear cuenta</h3>
+        <div class="field">
+          <label for="registroEmail">Correo electrónico</label>
+          <input type="email" id="registroEmail" placeholder="tu@email.com">
+        </div>
+        <div class="field">
+          <label for="registroPassword">Contraseña</label>
+          <input type="password" id="registroPassword" placeholder="Mínimo 6 caracteres">
+        </div>
+        <button onclick="registrar()">Registrarse</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  (function(){
+    emailjs.init("c99a6kVaJYL3niUOD");
+  })();
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBJsBvu45THZ06HNhPFg2hveU9LQhxZGmo",
+    authDomain: "calisteniaintegral.firebaseapp.com",
+    databaseURL: "https://calisteniaintegral-default-rtdb.firebaseio.com",
+    projectId: "calisteniaintegral",
+    storageBucket: "calisteniaintegral.firebasestorage.app",
+    messagingSenderId: "517156143414",
+    appId: "1:517156143414:web:278145b2b1776cce5b3397",
+    measurementId: "G-7CFXJ9XW98"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+
+  const db = firebase.database();
+  const auth = firebase.auth();
+  const maxCupos = 10;
+  const disponibilidad = { ocupados: 0, disponibles: maxCupos };
+
+  const statusMsg = document.getElementById("statusMsg");
+  const submitBtn = document.getElementById("submitBtn");
+
+  function setStatus(text, type){
+    statusMsg.textContent = text;
+    statusMsg.dataset.type = type || "";
+  }
+
+  function setLoading(isLoading){
+    submitBtn.disabled = isLoading;
+    submitBtn.textContent = isLoading ? "Enviando..." : "Reservar clase";
+  }
+
+  function abrirLogin(){
+    document.getElementById("loginModal").style.display = "block";
+  }
+
+  function cerrarLogin(){
+    document.getElementById("loginModal").style.display = "none";
+  }
+
+  function mostrarRegistro(){
+    document.getElementById("registroBox").style.display = "block";
+  }
+
+  function registrar(){
+    let email = document.getElementById("registroEmail").value;
+    let password = document.getElementById("registroPassword").value;
+
+    auth.createUserWithEmailAndPassword(email,password)
+      .then(()=>{
+        alert("Registro exitoso");
+        cerrarLogin();
+        document.getElementById("registroEmail").value = "";
+        document.getElementById("registroPassword").value = "";
+        document.getElementById("formulario").scrollIntoView({ behavior:"smooth" });
+      })
+      .catch((error)=>{
+        alert(error.message);
+      });
+  }
+
+  function login(){
+    let email = document.getElementById("loginEmail").value;
+    let password = document.getElementById("loginPassword").value;
+
+    auth.signInWithEmailAndPassword(email,password)
+      .then(()=>{
+        alert("Bienvenido a Calistenia Integral");
+        cerrarLogin();
+      })
+      .catch((error)=>{
+        alert(error.message);
+      });
+  }
+
+  function recuperarPassword(){
+    let email = document.getElementById("loginEmail").value.trim();
+
+    if(!email){
+      alert("Ingresá tu correo para enviarte el link de restablecimiento");
+      return;
+    }
+
+    auth.sendPasswordResetEmail(email)
+      .then(()=>{
+        alert("Te enviamos un link para restablecer tu contraseña. Si no lo encontrás en la bandeja de entrada, revisá spam o promociones.");
+      })
+      .catch((error)=>{
+        alert(error.message);
+      });
+  }
+
+  function toLocalDateTime(dateStr, timeStr){
+    return new Date(`${dateStr}T${timeStr}`);
+  }
+
+  function normalizeDate(dateStr){
+    if(!dateStr){
+      return dateStr;
+    }
+    if(dateStr.startsWith("00") && dateStr.length === 10){
+      return "20" + dateStr.slice(2);
+    }
+    return dateStr;
+  }
+
+  function cerrarSesion(){
+    auth.signOut().then(()=>{
+      alert("Sesión cerrada");
+    });
+  }
+
+  auth.onAuthStateChanged(function(user){
+    if(user){
+      document.getElementById("usuarioInfo").innerHTML =
+        "Hola " + user.email + " | Cerrar sesión";
+      document.getElementById("usuarioInfo").onclick = cerrarSesion;
+    }else{
+      document.getElementById("usuarioInfo").innerHTML = "Ingresar";
+      document.getElementById("usuarioInfo").onclick = abrirLogin;
+    }
+  });
+
+  function mostrarCupos(fecha, hora){
+    db.ref("reservas").once("value", function(snapshot){
+      let ocupados = 0;
+
+      snapshot.forEach(function(child){
+        let r = child.val();
+        if(r.date === fecha && r.time === hora){
+          ocupados++;
+        }
+      });
+
+      disponibilidad.ocupados = ocupados;
+      disponibilidad.disponibles = maxCupos - ocupados;
+
+      let html = "<div class='cupos-grid'>";
+
+      for(let i=0;i<maxCupos;i++){
+        if(i < ocupados){
+          html += "<div class='cupo rojo'></div>";
+        }else{
+          html += "<div class='cupo verde'></div>";
+        }
+      }
+
+      html += "</div>";
+      html += "<p class='cupos-text'>" + disponibilidad.disponibles + " cupos disponibles</p>";
+
+      document.getElementById("cupos").innerHTML = html;
+
+      if(disponibilidad.disponibles <= 0){
+        setStatus("Este horario está completo. Elegí otro.", "error");
+      }else{
+        setStatus("", "");
+      }
+    });
+  }
+
+  document.querySelector("[name=date]").addEventListener("change", function(){
+    let fecha = this.value;
+    let hora = document.querySelector("[name=time]").value;
+    if(hora){
+      mostrarCupos(fecha, hora);
+    }
+  });
+
+  document.querySelector("[name=time]").addEventListener("change", function(){
+    let hora = this.value;
+    let fecha = document.querySelector("[name=date]").value;
+    if(fecha){
+      mostrarCupos(fecha, hora);
+    }
+  });
+
+  document.getElementById("formulario").addEventListener("submit", function(event){
+    event.preventDefault();
+
+    let user = auth.currentUser;
+    if(!user){
+      setStatus("Debes iniciar sesión para reservar", "error");
+      abrirLogin();
+      return;
+    }
+
+    if(disponibilidad.disponibles <= 0){
+      setStatus("No hay cupos en este horario", "error");
+      return;
+    }
+
+    let form = this;
+    setLoading(true);
+
+    db.ref("reservas").push({
+      name: form.name.value,
+      email: form.email.value,
+      phone: form.phone.value,
+      date: form.date.value,
+      time: form.time.value,
+      message: form.message.value
+    });
+
+    emailjs.sendForm(
+      "service_vca0smr",
+      "template_dxcscrn",
+      form
+    );
+
+    setStatus("Reserva enviada correctamente", "success");
+    form.reset();
+    setLoading(false);
+  });
+
+  const cancelStatus = document.getElementById("cancelStatus");
+  const cancelBtn = document.getElementById("cancelBtn");
+
+  function setCancelStatus(text, type){
+    cancelStatus.textContent = text;
+    cancelStatus.dataset.type = type || "";
+  }
+
+  function setCancelLoading(isLoading){
+    cancelBtn.disabled = isLoading;
+    cancelBtn.textContent = isLoading ? "Enviando..." : "Cancelar clase";
+  }
+
+  document.getElementById("cancelForm").addEventListener("submit", function(event){
+    event.preventDefault();
+
+    const name = document.getElementById("cancelName").value.trim();
+    const email = document.getElementById("cancelEmail").value.trim();
+    const dateInput = document.getElementById("cancelDate");
+    const date = normalizeDate(dateInput.value);
+    const time = document.getElementById("cancelTime").value;
+    const motivo = document.getElementById("cancelReason").value.trim();
+
+    if(!name || !email || !date || !time){
+      setCancelStatus("Completá nombre, email, fecha y horario.", "error");
+      return;
+    }
+
+    if(date !== dateInput.value){
+      dateInput.value = date;
+    }
+
+    document.getElementById("cancelClassType").value = "Reserva de clase cancelada";
+
+    const classTime = toLocalDateTime(date, time);
+    const now = new Date();
+    const diffMs = classTime - now;
+
+    if(diffMs < 30 * 60 * 1000){
+      setCancelStatus("La cancelación debe hacerse con al menos 30 minutos de anticipación.", "error");
+      return;
+    }
+
+    setCancelLoading(true);
+
+    db.ref("reservas").once("value", function(snapshot){
+      let removed = 0;
+      snapshot.forEach(function(child){
+        const r = child.val();
+        if(r.email === email && r.date === date && r.time === time){
+          child.ref.remove();
+          removed++;
+        }
+      });
+
+      const mensaje = motivo ? motivo : "";
+
+      document.getElementById("cancelCorreo").value = email;
+      document.getElementById("cancelReason").value = mensaje;
+
+      if(removed > 0){
+        setCancelStatus("Tu reserva fue cancelada con exito.", "success");
+        document.getElementById("cancelForm").submit();
+        document.getElementById("cancelForm").reset();
+      }else{
+        setCancelStatus("No encontramos una reserva con esos datos.", "error");
+      }
+
+      setCancelLoading(false);
+    });
+  });
+
+  (function setMinDate(){
+    const dateInput = document.getElementById("date");
+    const hoy = new Date();
+    const yyyy = 2026;
+    const mm = String(hoy.getMonth() + 1).padStart(2, "0");
+    const dd = String(hoy.getDate()).padStart(2, "0");
+    dateInput.min = `${yyyy}-01-01`;
+    if(!dateInput.value){
+      dateInput.value = `${yyyy}-${mm}-${dd}`;
+    }
+    const cancelDateInput = document.getElementById("cancelDate");
+    cancelDateInput.min = `${yyyy}-01-01`;
+    if(!cancelDateInput.value){
+      cancelDateInput.value = `${yyyy}-${mm}-${dd}`;
+    }
+  })();
+</script>
+</body>
+</html>
