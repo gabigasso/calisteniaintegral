@@ -398,7 +398,11 @@
           error.code === "auth/invalid-credential" ||
           error.code === "auth/user-not-found"
         ){
-          alert("La contraseña es incorrecta.");
+          if(error.code === "auth/user-not-found"){
+            alert("Correo electrónico no registrado.");
+          }else{
+            alert("La contraseña es incorrecta.");
+          }
         }else{
           alert(error.message);
         }
