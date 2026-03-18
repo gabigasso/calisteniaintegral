@@ -749,18 +749,19 @@ textarea{
 
 @media (max-width: 640px){
   main{
-    padding-top:10px;
+    padding-top:0;
   }
 
   .site-header{
     grid-template-columns:1fr;
     gap:12px;
     align-items:flex-start;
-    padding:16px 6vw;
+    padding:10px 0 6px;
   }
 
   .brand{
     align-items:center;
+    padding:0;
   }
 
   .brand-text{
@@ -769,11 +770,13 @@ textarea{
 
   .nav{
     order:3;
+    padding:0;
   }
 
   .header-actions{
     order:2;
     width:100%;
+    padding:0;
   }
 
   .login-btn{
@@ -782,7 +785,7 @@ textarea{
   }
 
   .promo{
-    padding:10px 6vw 0;
+    padding:0;
   }
 
   .promo-img{
@@ -796,7 +799,7 @@ textarea{
   }
 
   .promo-overlay{
-    padding:20px;
+    padding:18px;
   }
 
   .promo-eyebrow{
