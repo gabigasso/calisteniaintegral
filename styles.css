@@ -749,13 +749,14 @@ textarea{
 
 @media (max-width: 640px){
   main{
-    padding-top:6px;
+    padding-top:10px;
   }
 
   .site-header{
     grid-template-columns:1fr;
     gap:12px;
     align-items:flex-start;
+    padding:16px 6vw;
   }
 
   .brand{
@@ -781,14 +782,13 @@ textarea{
   }
 
   .promo{
-    padding:8px 6vw 0;
+    padding:10px 6vw 0;
   }
 
   .promo-img{
-    height:auto;
-    max-height:420px;
-    object-fit:contain;
-    background:#0b0b0f;
+    height:520px;
+    max-height:none;
+    object-fit:cover;
   }
 
   .promo-overlay h2{
@@ -807,9 +807,6 @@ textarea{
   .card{
     padding:22px;
     border-radius:10px;
-  }
-  .site-header{
-    padding:10px 6vw;
   }
 
   .brand{
