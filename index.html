@@ -376,7 +376,12 @@
         cerrarLogin();
       })
       .catch((error)=>{
-        if(error.code === "auth/wrong-password" || error.code === "auth/invalid-login-credentials" || error.code === "auth/invalid-credential"){
+        if(
+          error.code === "auth/wrong-password" ||
+          error.code === "auth/invalid-login-credentials" ||
+          error.code === "auth/invalid-credential" ||
+          error.code === "auth/user-not-found"
+        ){
           alert("La contraseña es incorrecta.");
         }else{
           alert(error.message);
