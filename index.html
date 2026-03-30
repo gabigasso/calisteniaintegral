@@ -117,7 +117,7 @@
             </div>
             <div class="field">
               <label for="time">Horario</label>
-              <input id="time" type="time" name="time" required>
+              <input id="time" type="text" name="time" placeholder="07:00" inputmode="text" autocomplete="off" pattern="^([01]\\d|2[0-3]):[0-5]\\d$" required>
             </div>
           </div>
 
@@ -181,7 +181,7 @@
             </div>
             <div class="field">
               <label for="cancelTime">Horario</label>
-              <input id="cancelTime" type="time" name="time" required>
+              <input id="cancelTime" type="text" name="time" placeholder="07:00" inputmode="text" autocomplete="off" pattern="^([01]\\d|2[0-3]):[0-5]\\d$" required>
             </div>
           </div>
 
@@ -440,6 +440,39 @@
     return dateStr;
   }
 
+  const TIME_START = "07:00";
+  const TIME_END = "21:00";
+
+  function isValidTimeFormat(value){
+    return /^([01]\d|2[0-3]):[0-5]\d$/.test(value);
+  }
+
+  function timeToMinutes(value){
+    const parts = value.split(":").map(Number);
+    return (parts[0] * 60) + parts[1];
+  }
+
+  function isTimeInRange(value){
+    if(!isValidTimeFormat(value)){
+      return false;
+    }
+    const minutes = timeToMinutes(value);
+    return minutes >= timeToMinutes(TIME_START) && minutes <= timeToMinutes(TIME_END);
+  }
+
+  function getTimeError(value){
+    if(!value){
+      return `Ingresá un horario entre ${TIME_START} y ${TIME_END}.`;
+    }
+    if(!isValidTimeFormat(value)){
+      return "Usá el formato HH:MM (ej: 07:00).";
+    }
+    if(!isTimeInRange(value)){
+      return `El horario debe estar entre ${TIME_START} y ${TIME_END}.`;
+    }
+    return "";
+  }
+
   function cerrarSesion(){
     auth.signOut().then(()=>{
       alert("Sesión cerrada");
@@ -497,16 +530,20 @@
   document.querySelector("[name=date]").addEventListener("change", function(){
     let fecha = this.value;
     let hora = document.querySelector("[name=time]").value;
-    if(hora){
+    if(hora && isTimeInRange(hora)){
       mostrarCupos(fecha, hora);
+    }else if(hora){
+      setStatus(getTimeError(hora), "error");
     }
   });
 
-  document.querySelector("[name=time]").addEventListener("change", function(){
+  document.querySelector("[name=time]").addEventListener("input", function(){
     let hora = this.value;
     let fecha = document.querySelector("[name=date]").value;
-    if(fecha){
+    if(fecha && isTimeInRange(hora)){
       mostrarCupos(fecha, hora);
+    }else if(fecha && hora){
+      setStatus(getTimeError(hora), "error");
     }
   });
 
@@ -517,6 +554,11 @@
     if(!user){
       setStatus("Debes iniciar sesión para reservar", "error");
       abrirLogin();
+      return;
+    }
+
+    if(!isTimeInRange(form.time.value.trim())){
+      setStatus(getTimeError(form.time.value.trim()), "error");
       return;
     }
 
@@ -568,11 +610,16 @@
     const email = document.getElementById("cancelEmail").value.trim();
     const dateInput = document.getElementById("cancelDate");
     const date = normalizeDate(dateInput.value);
-    const time = document.getElementById("cancelTime").value;
+    const time = document.getElementById("cancelTime").value.trim();
     const motivo = document.getElementById("cancelReason").value.trim();
 
     if(!name || !email || !date || !time){
       setCancelStatus("Completá nombre, email, fecha y horario.", "error");
+      return;
+    }
+
+    if(!isTimeInRange(time)){
+      setCancelStatus(getTimeError(time), "error");
       return;
     }
 
